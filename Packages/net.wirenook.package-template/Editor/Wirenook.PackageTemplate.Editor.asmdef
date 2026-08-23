@@ -1,6 +1,9 @@
 {
-    "name": "VRChatPackageTemplate.Editor",
-    "references": [],
+    "name": "Wirenook.PackageTemplate.Editor",
+    "rootNamespace": "Wirenook.PackageTemplate.Editor",
+    "references": [
+        "Wirenook.PackageTemplate.Runtime"
+    ],
     "includePlatforms": [
         "Editor"
     ],
