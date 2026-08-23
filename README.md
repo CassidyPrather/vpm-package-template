@@ -3,41 +3,24 @@
 Cassidy's opinionated template for VRChat avatars, worlds, and the VPM packages
 that ship them. Enter at your own peril.
 
-The repository root is a Unity project — "the main project". Redistributable
-packages are directories under `Packages/`, beside the VPM dependencies the
-resolver installs (which never touch git). The main project is the dev harness:
-Unity cannot open a package without a host project, so it stays even when the
-packages are the whole point. When there is no package — a plain avatar or
-world — the package scaffolding is what gets deleted instead; Template Setup
-covers both directions.
-
-The VRChat SDK arrives on first editor open, courtesy of the vendored
-bootstrapper (`Packages/com.vrchat.core.bootstrap/`), and stays out of the
-repository; the `Packages/.gitignore` allowlist makes committing it
-structurally impossible. That is a licensing feature as much as a hygiene one —
-see Legal.
-
 ## Development
 
 Requires Unity 2022.3.22f1 (see `ProjectSettings/ProjectVersion.txt`) via a VPM
-client — [ALCOM](https://vrc-get.anatawa12.com/en/alcom/) or the
-[VRChat Creator Companion](https://vcc.docs.vrchat.com/) — plus the
-[.NET SDK](https://dotnet.microsoft.com/download) 8 for the headless checks.
+client (prefer [ALCOM](https://vrc-get.anatawa12.com/en/alcom/)).
+Requires [.NET SDK](https://dotnet.microsoft.com/download) 8 for headless checks.
 
 Open: add this folder as a project in your VPM client, add the SDK you picked
 in Template Setup, then open in Unity
 
 Test (editor): Window > General > Test Runner, EditMode tab
 
-Test (headless): `scripts/test.sh`
-
-Format: `scripts/format.sh` (CI runs `scripts/format.sh --check`)
-
-Meta check: `scripts/check-meta.sh`
-
-Manifest check: `scripts/check-manifests.py`
-
-Build packages: `scripts/build-packages.sh` (writes `dist/`)
+```bash
+scripts/check-meta.sh          # every visible file has a committed .meta
+scripts/check-manifests.py     # package.json sanity across Packages/
+scripts/format.sh --check      # dotnet-format over the CI-visible C#
+scripts/test.sh                # headless NUnit run of Runtime/Core + Tests
+scripts/build-packages.sh      # VPM .zip + .unitypackage per package -> dist/
+```
 
 ### Advanced
 
@@ -160,7 +143,7 @@ Program with the VRChat SDK and with Unity Technologies' proprietary engine
 components, and to convey the resulting work under terms of your choice,
 provided that you also convey the Corresponding Source of this Program under
 the terms of the GNU Affero General Public License version 3 in all other
-respects. (This exception also lives in `LICENSE_ADDENDUM`.)
+respects. (This exception also in `LICENSE_ADDENDUM`.)
 
 ## Credits
 
