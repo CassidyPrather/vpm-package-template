@@ -1,76 +1,170 @@
 # VPM Package Template
 
-Starter for making Packages, including automation for building and publishing them.
+Cassidy's opinionated template for VRChat avatars, worlds, and the VPM packages
+that ship them. Enter at your own peril.
 
-Once you're all set up, you'll be able to push changes to this repository and have .zip and .unitypackage versions automatically generated, and a listing made which works in the VPM for delivering updates for this package. If you want to make a listing with a variety of packages, check out our [template-package-listing](https://github.com/vrchat-community/template-package-listing) repo.
+The repository root is a Unity project — "the main project". Redistributable
+packages are directories under `Packages/`, beside the VPM dependencies the
+resolver installs (which never touch git). The main project is the dev harness:
+Unity cannot open a package without a host project, so it stays even when the
+packages are the whole point. When there is no package — a plain avatar or
+world — the package scaffolding is what gets deleted instead; Template Setup
+covers both directions.
 
-## ▶ Getting Started
+The VRChat SDK arrives on first editor open, courtesy of the vendored
+bootstrapper (`Packages/com.vrchat.core.bootstrap/`), and stays out of the
+repository; the `Packages/.gitignore` allowlist makes committing it
+structurally impossible. That is a licensing feature as much as a hygiene one —
+see Legal.
 
-* Press [![Use This Template](https://user-images.githubusercontent.com/737888/185467681-e5fdb099-d99f-454b-8d9e-0760e5a6e588.png)](https://github.com/vrchat-community/template-package/generate)
-to start a new GitHub project based on this template.
-  * Choose a fitting repository name and description.
-  * Set the visibility to 'Public'. You can also choose 'Private' and change it later.
-  * You don't need to select 'Include all branches.'
-* Clone this repository locally using Git.
-  * If you're unfamiliar with Git and GitHub, [visit GitHub's documentation](https://docs.github.com/en/get-started/quickstart/git-and-github-learning-resources) to learn more.
-* Add the folder to Unity Hub and open it as a Unity Project.
-* After opening the project, wait while the VPM resolver is downloaded and added to your project.
-  * This gives you access to the VPM Package Maker and Package Resolver tools.
+## Development
 
-## 🚇 Migrating Assets Package
-Full details at [Converting Assets to a VPM Package](https://vcc.docs.vrchat.com/guides/convert-unitypackage)
+Requires Unity 2022.3.22f1 (see `ProjectSettings/ProjectVersion.txt`) via a VPM
+client — [ALCOM](https://vrc-get.anatawa12.com/en/alcom/) or the
+[VRChat Creator Companion](https://vcc.docs.vrchat.com/) — plus the
+[.NET SDK](https://dotnet.microsoft.com/download) 8 for the headless checks.
 
-## ✏️ Working on Your Package
+Open: add this folder as a project in your VPM client, add the SDK you picked
+in Template Setup, then open in Unity
 
-* Delete the "Packages/com.vrchat.demo-template" directory or reuse it for your own package.
-  * If you reuse the package, don't forget to rename it and add generated meta files to your repository!
-* Update the `.gitignore` file in the "Packages" directory to include your package.
-  * For example, change `!com.vrchat.demo-template` to `!com.username.package-name`.
-  * `.gitignore` files normally *exclude* the contents of your "Packages" directory. This `.gitignore` in this template show how to *include* the demo package. You can easily change this out for your own package name.
-* Open the Unity project and work on your package's files in your favorite code editor.
-* When you're ready, commit and push your changes.
-* Once you've set up the automation as described below, you can easily publish new versions.
+Test (editor): Window > General > Test Runner, EditMode tab
 
-## 🤖 Setting up the Automation
+Test (headless): `scripts/test.sh`
 
-Create a repository variable with the name and value described below.
-For details on how to create repository variables, see [Creating Configuration Variables for a Repository](https://docs.github.com/en/actions/learn-github-actions/variables#creating-configuration-variables-for-a-repository).
-Make sure you are creating a **repository variable**, and not a **repository secret**.
+Format: `scripts/format.sh` (CI runs `scripts/format.sh --check`)
 
-* `PACKAGE_NAME`: the name of your package, like `com.vrchat.demo-template`.
+Meta check: `scripts/check-meta.sh`
 
-Finally, go to the "Settings" page for your repo, then choose "Pages", and look for the heading "Build and deployment". Change the "Source" dropdown from "Deploy from a branch" to "GitHub Actions".
+Manifest check: `scripts/check-manifests.py`
 
-That's it!
-Some other notes:
-* We highly recommend you keep the existing folder structure of this template.
-  * The root of the project should be a Unity project.
-  * Your packages should be in the "Packages" directory.
-  * If you deviate from this folder structure, you'll need to update the paths that assume your package is in the "Packages" directory on lines 24, 38, 41 and 57.
-* If you want to store and generate your web files in a folder other than "Website" in the root, you can change the `listPublicDirectory` item [here in build-listing.yml](.github/workflows/build-listing.yml#L17).
+Build packages: `scripts/build-packages.sh` (writes `dist/`)
 
-## 🎉 Publishing a Release
+### Advanced
 
-You can make a release by running the [Build Release](.github/workflows/release.yml) action. The version specified in your `package.json` file will be used to define the version of the release.
+Pre-commit hook: `git config core.hooksPath .githooks` (runs the meta and
+manifest checks)
 
-## 📃 Rebuilding the Listing
+Release:
 
-Whenever you make a change to a release - manually publishing it, or manually creating, editing or deleting a release, the [Build Repo Listing](.github/workflows/build-listing.yml) action will make a new index of all the releases available, and publish them as a website hosted fore free on [GitHub Pages](https://pages.github.com/). This listing can be used by the VPM to keep your package up to date, and the generated index page can serve as a simple landing page with info for your package. The URL for your package will be in the format `https://username.github.io/repo-name`.
+1. Bump `version` in the package's `package.json`
+2. Commit and push
+3. Create a GitHub release tagged with that version — CI attaches the `.zip`
+   and `.unitypackage` for every package whose version matches the tag
+4. Add the repository to your listing's `githubRepos`
+   ([CassidyPrather/vpm](https://github.com/CassidyPrather/vpm)) once; every
+   later release is picked up from the release assets automatically
 
-## 🏠 Customizing the Landing Page (Optional)
+## Template Setup
 
-The action which rebuilds the listing also publishes a landing page. The source for this page is in `Website/index.html`. The automation system uses [Scriban](https://github.com/scriban/scriban) to fill in the objects like `{{ this }}` with information from the latest release's manifest, so it will stay up-to-date with the name, id and description that you provide there. You are welcome to modify this page however you want - just use the existing `{{ template.objects }}` to fill in that info wherever you like. The entire contents of your "Website" folder are published to your GitHub Page each time.
+1. **Create a new repository** from this template on GitHub (click "Use this
+   template")
 
-## 💻 Technical Stuff
+2. **Clone your new repository** and navigate to it
 
-You are welcome to make your own changes to the automation process to make it fit your needs, and you can create Pull Requests if you have some changes you think we should adopt. Here's some more info on the included automation:
+3. **Pick a flavor.** The four supported shapes are avatar *project*, world
+   *project* (yours alone, nothing redistributable), avatar *package*, and
+   world *package* (a redistributable under `Packages/`). Whichever you pick,
+   add the matching SDK to the project via your VPM client:
+   `com.vrchat.avatars` or `com.vrchat.worlds` — never both; they refuse to
+   coexist.
 
-### Build Release Action
-[release.yml](/.github/workflows/release.yml)
+4. **Project, not package?** Gut the package scaffolding:
+   - Delete `Packages/net.wirenook.package-template/`
+   - Remove the `!net.wirenook.package-template` line from `Packages/.gitignore`
+   - Remove `net.wirenook.package-template` from `testables` in
+     `Packages/manifest.json`
+   - Delete the `build-and-publish` job from `.github/workflows/ci-cd.yml`,
+     plus `scripts/build-packages.sh` and `scripts/unitypackage.py`
+   - Everything else stays: the checks and headless tests degrade cleanly to
+     "nothing to do" until you give them something, and the meta check earns
+     its keep on `Assets/` alone
 
-This is a composite action combining a variety of existing GitHub Actions and some shell commands to create both a .zip of your Package and a .unitypackage. It creates a release which is named for the `version` in the `package.json` file found in your target Package, and publishes the zip, the unitypackage and the package.json file to this release.
+5. **Package? Rename the sample** everywhere its name is hardcoded:
+   - The `Packages/net.wirenook.package-template/` directory itself
+   - `package.json`: `name`, `displayName`, `description`, and `author`
+   - Both `.asmdef` file names and their `name` fields, and the Tests asmdef's
+     reference to the Runtime assembly
+   - The `!net.wirenook.package-template` line in `Packages/.gitignore`
+   - The `testables` entry in `Packages/manifest.json`
+   - Declare the SDK in `vpmDependencies`, e.g.
+     `"com.vrchat.avatars": "^3.7.0"`
 
-### Build Repo Listing
-[build-listing.yml](.github/workflows/build-listing.yml)
+6. **Vendored proprietary assets** — keep or strip:
+   - Keep: create a *private* repository for the assets and mount it:
+     `git submodule add <private-remote> Assets/Vendor`. Open Unity once,
+     commit the generated `Assets/Vendor.meta`, and from then on
+     `git clone --recurse-submodules` Just Works. See Vendored assets below.
+   - Strip: delete the Vendored assets section from this README. That's it —
+     the mechanism is git itself, so there is nothing else to remove.
 
-This is a composite action which builds a vpm-compatible [Repo Listing](https://vcc.docs.vrchat.com/vpm/repos) based on the releases you've created. In order to find all your releases and combine them into a listing, it checks out [another repository](https://github.com/vrchat-community/package-list-action) which has a [Nuke](https://nuke.build/) project which includes the VPM core lib to have access to its types and methods. This project will be expanded to include more functionality in the future - for now, the action just calls its `BuildRepoListing` target.
+7. **Update the README**: replace the title and description, remove or
+   customize this Template Setup section
+
+8. **Verify everything works**:
+
+   ```bash
+   scripts/check-meta.sh
+   scripts/check-manifests.py
+   scripts/test.sh
+   scripts/build-packages.sh
+   ```
+
+### Replacing the demo
+
+The sample package exists so the template ships exercised, not because it is
+precious. Its full blast radius, in gutting order:
+
+1. `Runtime/Core/Easing.cs` — replace wholesale. Keep the shape: pure C#, no
+   UnityEngine, no SDK. Everything in `Runtime/Core/` is compiled by
+   `scripts/test.sh` against nothing but the standard library and NUnit, so a
+   stray engine reference there fails CI — that is the fence working, not a
+   bug.
+2. `Tests/Editor/EasingTests.cs` — rewrite against your logic. Stick to the
+   classic asserts; the same files run under `dotnet test` in CI and the Unity
+   Test Runner in the editor.
+3. `Editor/PackageTemplateMenu.cs` — demo-specific; replace or delete.
+4. `Runtime/` outside `Core/` is where MonoBehaviours and SDK-facing glue go.
+   CI compiles none of it, the editor all of it.
+
+Nothing else references the demo.
+
+See [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md) for curated links:
+tooling, docs, avatar frameworks, asset sources, and so on and so forth.
+
+## Vendored assets
+
+Proprietary assets — store purchases, licensed packs — must never be published
+in this repository. They live in a *private* repository mounted as a submodule
+at `Assets/Vendor`; clone with `--recurse-submodules` and they Just Work.
+Because `.unitypackage` imports preserve GUIDs, anyone who imports their own
+licensed copy of the same pack gets the same GUIDs — so references from
+committed prefabs and scenes into vendored assets survive for people who can't
+see your submodule at all.
+
+Clones without access still open fine: git leaves `Assets/Vendor` empty and
+Unity shrugs. CI clones without submodules on purpose — it is the standing
+proof that nothing tracked *requires* the private half. Record each pack in
+[CREDITS.md](CREDITS.md), license column included, even though the bytes stay
+private.
+
+## Legal
+
+Copyright 2026 Cassidy Prather <cassidy@wirenook.net>
+
+Everything in this repository henceforth is licensed under
+[AGPLv3](https://www.gnu.org/licenses/agpl-3.0.html) (See `LICENSE`) unless
+otherwise specified.
+
+As a special exception, the copyright holders give permission to link this
+Program with the VRChat SDK and with Unity Technologies' proprietary engine
+components, and to convey the resulting work under terms of your choice,
+provided that you also convey the Corresponding Source of this Program under
+the terms of the GNU Affero General Public License version 3 in all other
+respects. (This exception also lives in `LICENSE_ADDENDUM`.)
+
+## Credits
+
+Descended from https://github.com/vrchat-community/template-package
+([VRCHAT DISTRO LICENSE FILE](https://github.com/vrchat-community/template-package/blob/d9cf13fe9f56867cbf7315a4dbbf1901bc1537ec/Packages/com.vrchat.core.bootstrap/License.md))
+
+Vendored third-party material is inventoried in [CREDITS.md](CREDITS.md).
