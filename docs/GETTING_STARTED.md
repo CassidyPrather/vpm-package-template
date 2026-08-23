@@ -7,6 +7,7 @@ Curated links for building on this template. Opinionated glosses included.
 - [ALCOM](https://vrc-get.anatawa12.com/en/alcom/) — open-source VPM client; what this template assumes.
 - [vrc-get](https://github.com/vrc-get/vrc-get) — ALCOM's CLI sibling; scriptable package operations.
 - [VRChat Creator Companion](https://vcc.docs.vrchat.com/) — the official client, if you must.
+- [VRCX](https://github.com/vrcx-team/VRCX/) — player-side, but the gold standard for interfacing with VRChat's API. MIT.
 
 ## Documentation
 
@@ -19,6 +20,7 @@ Curated links for building on this template. Opinionated glosses included.
 - [NDMF](https://ndmf.nadena.dev/) — non-destructive build framework; the sane base for avatar tooling.
 - [Modular Avatar](https://modular-avatar.nadena.dev/) — NDMF's flagship; study its packaging before inventing your own.
 - [Av3Emulator](https://github.com/lyuma/Av3Emulator) — exercise avatar behaviour in the editor instead of uploading to find out.
+- [lilToon](https://github.com/lilxyzw/lilToon) — shader builder under MIT; plays nice with copyleft.
 
 ## Assets
 
