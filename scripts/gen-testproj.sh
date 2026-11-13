@@ -18,17 +18,17 @@ mkdir -p dist/testproj
     cat <<'EOF'
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net11.0</TargetFramework>
     <!-- Unity 2022.3 compiles C# 9; CI must reject syntax the editor would. -->
     <LangVersion>9.0</LangVersion>
     <IsPackable>false</IsPackable>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
-    <!-- NUnit 3 to match the Unity Test Framework; 4.x drops the classic asserts. -->
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.12.0" />
+    <!-- NUnit stays on 3.x to match the Unity Test Framework; 4.x+ drops the classic asserts. -->
     <PackageReference Include="NUnit" Version="3.14.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="6.3.1" />
   </ItemGroup>
   <ItemGroup>
 EOF

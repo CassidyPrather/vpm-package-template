@@ -12,12 +12,12 @@ jobs:
   lint-and-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Set up .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '11.0.x'
 
       - name: Check meta files
         run: scripts/check-meta.sh
@@ -38,7 +38,7 @@ jobs:
     permissions:
       contents: write  # Required for uploading release assets
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Build packages
         run: scripts/build-packages.sh
@@ -53,7 +53,7 @@ jobs:
           mv dist/packages/*-"$tag".zip dist/packages/*-"$tag".unitypackage dist/release/
 
       - name: Upload release assets
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: |
             dist/release/*

@@ -13,14 +13,14 @@
 
 - [VRChat Creation](https://creators.vrchat.com/) - the official docs; avatars, worlds, and the SDK's moods.
 - [UdonSharp](https://udonsharp.docs.vrchat.com/) - C# for world behaviours; ships with the Worlds SDK now.
-- [Unity Test Framework](https://docs.unity3d.com/Packages/com.unity.test-framework@1.1/manual/index.html) - what runs the `Tests/` assemblies in-editor.
+- [Unity Test Framework](https://docs.unity3d.com/Packages/com.unity.test-framework@1.4/manual/index.html) - what runs the `Tests/` assemblies in-editor.
 
 ## Avatar packages
 
 - [NDMF](https://ndmf.nadena.dev/) - non-destructive build framework; the sane base for avatar tooling.
-- [Modular Avatar](https://modular-avatar.nadena.dev/) - NDMF's flagship; study its packaging before inventing your own.
+- [Modular Avatar](https://modular-avatar.nadena.dev/) - NDMF's flagship and a default dependency here; study its packaging before inventing your own.
 - [Av3Emulator](https://github.com/lyuma/Av3Emulator) - exercise avatar behaviour in the editor instead of uploading to find out.
-- [lilToon](https://github.com/lilxyzw/lilToon) - shader builder under MIT; plays nice with copyleft.
+- [lilToon](https://github.com/lilxyzw/lilToon) - shader builder under MIT and a default dependency here; plays nice with copyleft.
 
 ## Assets
 

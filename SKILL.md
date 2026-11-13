@@ -16,6 +16,7 @@ VRChat/Unity linking exception in `LICENSE_ADDENDUM`.
 - `Assets/` — main-project content: scenes, avatars, world files. Empty in the template.
 - `Packages/net.wirenook.package-template/` — the sample package; disposable, see README → Replacing the demo.
 - `Packages/com.vrchat.core.bootstrap/` — VRChat's resolver bootstrapper, vendored byte-for-byte. Don't touch.
+- `Packages/vpm-manifest.json` — the main project's VPM dependencies (by default the VRChat Avatars SDK, lilToon, and Modular Avatar; NDMF and `com.vrchat.base` are locked as their dependencies). MA and NDMF don't compile without the SDK, because it ships the `System.Collections.Immutable` and Harmony they use. Edit it with a VPM client (ALCOM / `vrc-get`), not by hand.
 - `Packages/.gitignore` — allowlist inversion keeping resolver-installed packages out of git. Load-bearing.
 - `ProjectSettings/` — pinned Unity project configuration (`ProjectVersion.txt` names the editor build).
 - `scripts/` — the checks and builds; CI runs these same scripts, nothing else.
@@ -51,5 +52,6 @@ scripts/build-packages.sh      # VPM .zip + .unitypackage per package -> dist/
 
 - Every asset gets a `CREDITS.md` line at intake — source, author, license, URL. CC0 first.
 - Proprietary assets ride the private `Assets/Vendor` submodule, never this repository.
+- Unity editor stays on 2022.3.22f1, the version VRChat supports. Runtime Unity packages in `Packages/manifest.json` (Timeline, TextMeshPro, AI Navigation, uGUI) stay at the versions the VRChat client ships. Only editor-only tooling (IDE integrations, Test Framework) tracks the latest.
 - Version lives in `package.json`; a release publishes every package whose version matches the tag.
 - The linking exception in `LICENSE_ADDENDUM` is load-bearing legal text. Don't reword it casually.

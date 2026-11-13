@@ -7,10 +7,14 @@ that ship them. Enter at your own peril.
 
 Requires Unity 2022.3.22f1 (see `ProjectSettings/ProjectVersion.txt`) via a VPM
 client (prefer [ALCOM](https://vrc-get.anatawa12.com/en/alcom/)).
-Requires [.NET SDK](https://dotnet.microsoft.com/download) 8 for headless checks.
+Requires [.NET SDK](https://dotnet.microsoft.com/download) 11 for headless checks.
 
-Open: add this folder as a project in your VPM client, add the SDK you picked
-in Template Setup, then open in Unity
+Open: add this folder as a project in your VPM client, then open in Unity. The
+client installs the defaults pinned in `Packages/vpm-manifest.json`: the
+VRChat Avatars SDK, [lilToon](https://lilxyzw.github.io/lilToon/), and
+[Modular Avatar](https://modular-avatar.nadena.dev/) (with NDMF). Add their
+listings to your client once: `https://lilxyzw.github.io/vpm-repos/vpm.json`
+and `https://vpm.nadena.dev/vpm.json`
 
 Test (editor): Window > General > Test Runner, EditMode tab
 
@@ -46,10 +50,13 @@ Release:
 
 3. **Pick a flavor.** The four supported shapes are avatar *project*, world
    *project* (yours alone, nothing redistributable), avatar *package*, and
-   world *package* (a redistributable under `Packages/`). Whichever you pick,
-   add the matching SDK to the project via your VPM client:
-   `com.vrchat.avatars` or `com.vrchat.worlds` — never both; they refuse to
-   coexist.
+   world *package* (a redistributable under `Packages/`). The defaults are
+   set up for avatars: `com.vrchat.avatars` 3.10.6 plus Modular Avatar. For a
+   world flavor, use your VPM client to remove Modular Avatar (and the NDMF it
+   pulled in), then swap `com.vrchat.avatars` for `com.vrchat.worlds`. Never
+   install both SDKs; they refuse to coexist. lilToon works in worlds too, so
+   keep it or drop it. SDK 3.10.x is still Unity 2022.3, so ignore any prompt
+   to move the project to Unity 6.
 
 4. **Project, not package?** Gut the package scaffolding:
    - Delete `Packages/net.wirenook.package-template/`
@@ -70,7 +77,10 @@ Release:
    - The `!net.wirenook.package-template` line in `Packages/.gitignore`
    - The `testables` entry in `Packages/manifest.json`
    - Declare the SDK in `vpmDependencies`, e.g.
-     `"com.vrchat.avatars": "^3.7.0"`
+     `"com.vrchat.avatars": "^3.10.6"`, plus whichever default packages your
+     code actually uses, e.g. `"nadena.dev.modular-avatar": "^1.18.7"`. The
+     project-level defaults don't carry over to people who install your
+     package, so anything you depend on has to be declared here.
 
 6. **Vendored proprietary assets** — keep or strip:
    - Keep: create a *private* repository for the assets and mount it:
