@@ -35,7 +35,7 @@ Release:
 
 1. Bump `version` in the package's `package.json`
 2. Commit and push
-3. Create a GitHub release tagged with that version — CI attaches the `.zip`
+3. Push a tag named for that version (`v` and the number) — CI makes the GitHub release and attaches the `.zip`
    and `.unitypackage` for every package whose version matches the tag
 4. Once per repository: add it to your listing's `githubRepos`
    ([CassidyPrather/vpm](https://github.com/CassidyPrather/vpm)), and give it
