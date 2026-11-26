@@ -37,9 +37,12 @@ Release:
 2. Commit and push
 3. Create a GitHub release tagged with that version — CI attaches the `.zip`
    and `.unitypackage` for every package whose version matches the tag
-4. Add the repository to your listing's `githubRepos`
-   ([CassidyPrather/vpm](https://github.com/CassidyPrather/vpm)) once; every
-   later release is picked up from the release assets automatically
+4. Once per repository: add it to your listing's `githubRepos`
+   ([CassidyPrather/vpm](https://github.com/CassidyPrather/vpm)), and give it
+   a `VPM_DISPATCH_TOKEN` secret (that repository's README says what kind).
+   The release job then asks the listing to rebuild as soon as the assets are
+   up. Without the secret the release still publishes, with a warning, and
+   the listing has to be rebuilt by hand from its Actions tab
 
 ## Template Setup
 
